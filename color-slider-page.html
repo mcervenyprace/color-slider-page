@@ -1,0 +1,236 @@
+<!doctype html>
+<!--
+When I was reviewing W3 schools I found an example that I liked very much:
+https://www.w3schools.com/htmL/html_colors_hsl.asp
+and I immediately wanted to code the same thing myself as an excercise
+this is the result.
+-->
+
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+
+
+<style>
+html{
+	height: 100%;
+	width: 100%;
+}
+
+body{
+	background-color: white;
+	height:100%;
+	width:100%;
+	margin: 0;
+}
+
+#chameleon{
+  	width: 100%;
+	height:50%;
+
+}
+
+.slidercontainer{
+	width: 25%;
+	height: 50%;
+	background-color: grey;
+	float: left;
+	
+}
+
+.sliderinside{
+	width: 90%;
+	height: 90%;
+	background-color: darkgrey;
+
+	margin: 5%;
+	margin-bottom: auto;
+	font-family: arial;
+	
+
+}
+
+
+
+.insideheader{
+	vertical-align:middle; 
+	text-align: center;
+	font-size:200%;
+	height:25%;
+	width: 100%;
+	background-color: lightgrey;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.containerfooter{
+	vertical-align:middle; 
+	text-align: center;
+	font-size:200%;
+	height: 25%;
+	width:100%;
+	background-color: lightgrey;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.rangecontainer{
+	height: 50%;
+	width: 100%;
+	background-color: lightgrey;
+}
+
+.range{
+	width: 90%;
+	height: 90%;
+	margin: 5%;
+}
+
+
+
+
+
+
+</style>
+
+
+</head>
+
+<html>
+<body>
+
+<div id="chameleon" style="background-color: purple">
+</div>
+
+<div id="huediv" class = "slidercontainer">
+	<div id="hueinside" class = "sliderinside">
+		<div class ="insideheader" >Hue</div>
+		<div class = "rangecontainer">
+			<input id="huerange" type="range" min="0" max="360" value ="1" class = "range"></input>
+		</div>	
+		<div id="huefooter" class ="containerfooter" >0</div>
+	</div>
+</div>
+
+<div id="saturationdiv" class = "slidercontainer">
+	<div id="saturationinside" class = "sliderinside">
+		<div class ="insideheader" >Saturation</div>
+		<div class = "rangecontainer">
+			<input id="saturationrange" type="range" min="0" max="100" value ="1" class = "range"></input>
+		</div>
+		<div id="saturationfooter" class ="containerfooter" >0</div>	
+	</div>
+</div>
+
+
+<div id="lightnessdiv" class = "slidercontainer">
+	<div id="lightnessinside" class = "sliderinside">
+		<div class ="insideheader" >Lightness</div>
+			<div class = "rangecontainer">
+				<input id="lightnessrange" type="range" min="0" max="100" value ="1" class = "range"></input>
+			</div>
+		<div id="lightnessfooter" class ="containerfooter" >0</div>
+	</div>
+</div>
+
+<div id="alphadiv" class = "slidercontainer">
+	<div id="alphainside" class = "sliderinside">
+			<div class ="insideheader" >Alpha</div>
+			<div class = "rangecontainer">
+				<input id="alpharange" type="range" min="0" max="1" step="0.01" value ="1" class = "range"></input>
+			</div>
+			<div id="alphafooter" class ="containerfooter" >0</div>
+	</div>
+</div>
+
+</body>
+</html>
+
+
+<script>
+
+var huerange = document.getElementById("huerange");
+var hueoutput = document.getElementById("huefooter");
+huerange.oninput = updateHue;
+
+var saturationrange = document.getElementById("saturationrange");
+var saturationoutput = document.getElementById("saturationfooter");
+saturationrange.oninput = updateSaturation;
+
+var lightnessrange = document.getElementById("lightnessrange");
+var lightnessoutput = document.getElementById("lightnessfooter");
+lightnessrange.oninput = updateLightness;
+
+var alpharange = document.getElementById("alpharange");
+var alphaoutput = document.getElementById("alphafooter");
+alpharange.oninput = updateAlpha;
+
+function updateHue(){
+		hueoutput.innerHTML = huerange.value;
+		changeColor();
+}
+
+function updateSaturation(){
+		saturationoutput.innerHTML = saturationrange.value + " %";
+		changeColor();
+}
+
+function updateLightness(){
+		lightnessoutput.innerHTML = lightnessrange.value+ " %";
+		changeColor();
+}
+
+function updateAlpha(){
+		alphaoutput.innerHTML = alpharange.value;
+		changeColor();
+}
+
+function hslToHex(h, s, l) {
+/*
+taken from
+https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
+*/
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+
+function changeColor(){
+	var hue = huerange.value;
+	var saturation = saturationrange.value;
+	var lightness = lightnessrange.value;
+	var alpha = alpharange.value;
+		
+	var chameleon = document.getElementById("chameleon");	
+	//chameleon.style.backgroundColor = "hsla(44,44%,37%,0.99)";
+	//by the gods why does this line work but when I input same string as variable it does not 
+	//on W3 schools there is also some sort of conversion so instead of figuring the math
+	//i just copied the following function
+	var hex = hslToHex(hue, saturation, lightness);
+	
+	chameleon.style.backgroundColor = hex;
+	chameleon.style.opacity = alpha;
+
+
+}
+
+
+updateHue();
+updateSaturation();
+updateLightness();
+updateAlpha();
+changeColor();
+</script>
